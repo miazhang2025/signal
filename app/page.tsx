@@ -21,6 +21,7 @@ export default async function HomePage() {
     .order('created_at', { ascending: false })
 
   // Fetch articles from the last 7 days
+  // Fetch articles added in the last 7 days (created_at = when we fetched them)
   const since = new Date()
   since.setDate(since.getDate() - 7)
 
@@ -30,7 +31,7 @@ export default async function HomePage() {
       *,
       source:sources!inner(*)
     `)
-    .gte('published_at', since.toISOString())
+    .gte('created_at', since.toISOString())
     .in('source_id', (sources ?? []).map((s) => s.id))
     .order('published_at', { ascending: false })
     .limit(50)

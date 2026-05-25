@@ -33,14 +33,14 @@ export async function POST(req: NextRequest) {
       .select('name, url, platform')
       .eq('user_id', user.id)
 
-    // Get recent unscored articles (last 7 days)
+    // Get recently fetched unscored articles (created in last 7 days)
     const since = new Date()
     since.setDate(since.getDate() - 7)
 
     const { data: articles } = await supabase
       .from('articles')
       .select('id, title, excerpt, platform, source:sources(name)')
-      .gte('published_at', since.toISOString())
+      .gte('created_at', since.toISOString())
       .eq('relevance_score', 0.5)
       .limit(30)
 
