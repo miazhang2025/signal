@@ -20,9 +20,9 @@ export default async function HomePage() {
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
 
-  // Fetch today's articles from user's sources
+  // Fetch articles from the last 7 days
   const since = new Date()
-  since.setHours(0, 0, 0, 0)
+  since.setDate(since.getDate() - 7)
 
   const { data: articles } = await supabase
     .from('articles')
@@ -40,7 +40,6 @@ export default async function HomePage() {
     .from('ratings')
     .select('article_id, stars')
     .eq('user_id', user.id)
-    .gte('rated_at', since.toISOString())
 
   const ratingMap: Record<string, number> = {}
   for (const r of ratings ?? []) {
