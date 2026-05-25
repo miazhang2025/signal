@@ -22,6 +22,11 @@ export async function fetchTwitterTimeline(username: string): Promise<TweetItem[
     )
     if (!userRes.ok) throw new Error(`User lookup failed: ${userRes.status}`)
     const userData = await userRes.json()
+    // CreditsDepleted or other API-plan errors — skip silently
+    if (userData.title === 'CreditsDepleted' || userData.errors || !userData.data) {
+      if (userData.title) console.warn('[Twitter] API plan error:', userData.title)
+      return []
+    }
     const userId = userData.data?.id
     if (!userId) return []
 
