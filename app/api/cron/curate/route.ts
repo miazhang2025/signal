@@ -33,9 +33,9 @@ export async function POST(req: NextRequest) {
       .select('name, url, platform')
       .eq('user_id', user.id)
 
-    // Get today's unscored articles from user's sources
+    // Get recent unscored articles (last 7 days)
     const since = new Date()
-    since.setHours(0, 0, 0, 0)
+    since.setDate(since.getDate() - 7)
 
     const { data: articles } = await supabase
       .from('articles')
