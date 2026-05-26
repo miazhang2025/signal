@@ -52,12 +52,15 @@ export default function ArticleCard({ article, variant = 'default', onRated }: A
         ...borderStyle,
         backgroundColor: 'var(--paper)',
         overflow: 'hidden',
-        cursor: 'pointer',
         display: 'flex',
         flexDirection: 'column',
       }}
-      onClick={() => window.open(article.url, '_blank', 'noopener,noreferrer')}
     >
+      {/* Clickable area (image + content) */}
+      <div
+        style={{ cursor: 'pointer', flex: 1, display: 'flex', flexDirection: 'column' }}
+        onClick={() => window.open(article.url, '_blank', 'noopener,noreferrer')}
+      >
       {/* Cover image */}
       <div
         style={{
@@ -68,31 +71,13 @@ export default function ArticleCard({ article, variant = 'default', onRated }: A
           overflow: 'hidden',
         }}
       >
-        {article.image_url ? (
-          <Image
-            src={article.image_url}
-            alt={article.title}
-            fill
-            style={{ objectFit: 'cover' }}
-            unoptimized
-          />
-        ) : (
-          <div
-            style={{
-              position: 'absolute',
-              inset: 0,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontFamily: 'Boldonse, serif',
-              fontSize: isHero ? '2rem' : '1.2rem',
-              color: 'var(--ink)',
-              opacity: 0.15,
-            }}
-          >
-            SIGNAL
-          </div>
-        )}
+        <Image
+          src={article.image_url ?? '/placeholder.png'}
+          alt={article.title}
+          fill
+          style={{ objectFit: 'cover' }}
+          unoptimized
+        />
       </div>
 
       {/* Content */}
@@ -188,9 +173,14 @@ export default function ArticleCard({ article, variant = 'default', onRated }: A
             {timeAgo(article.published_at)}
           </span>
         </div>
+      </div>
+      </div>
 
-        {/* Rating row */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
+        {/* Rating row — outside clickable area so stars don't navigate */}
+        <div
+          style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, padding: isHero ? '0 16px 16px' : '0 12px 12px' }}
+          onClick={(e) => e.stopPropagation()}
+        >
           <RatingStars
             articleId={article.id}
             initialRating={userRating}
@@ -226,7 +216,6 @@ export default function ArticleCard({ article, variant = 'default', onRated }: A
             </span>
           )}
         </div>
-      </div>
     </article>
   )
 }
