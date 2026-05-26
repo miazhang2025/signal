@@ -1,5 +1,7 @@
 'use client'
 
+import { useState } from 'react'
+
 interface NavBarProps {
   onOpenTaste: () => void
   onOpenAddSource: () => void
@@ -8,6 +10,18 @@ interface NavBarProps {
 const NAV_ITEMS = ['FRONT PAGE', 'AI', 'RESEARCH', 'DESIGN', 'TOOLS', 'COMMUNITY']
 
 export default function NavBar({ onOpenTaste, onOpenAddSource }: NavBarProps) {
+  const [fetching, setFetching] = useState(false)
+
+  async function handleFetchNow() {
+    setFetching(true)
+    try {
+      await fetch('/api/fetch-now', { method: 'POST' })
+      window.location.reload()
+    } catch {
+      setFetching(false)
+    }
+  }
+
   return (
     <nav
       style={{
@@ -51,6 +65,23 @@ export default function NavBar({ onOpenTaste, onOpenAddSource }: NavBarProps) {
 
       {/* Right actions */}
       <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+        <button
+          onClick={handleFetchNow}
+          disabled={fetching}
+          style={{
+            fontFamily: 'Boldonse, serif',
+            fontSize: '0.65rem',
+            letterSpacing: '1px',
+            backgroundColor: 'transparent',
+            color: fetching ? 'var(--gray-mid)' : 'var(--paper)',
+            border: '1px solid var(--gray-mid)',
+            padding: '6px 14px',
+            cursor: fetching ? 'not-allowed' : 'pointer',
+            height: 32,
+          }}
+        >
+          {fetching ? 'FETCHING...' : '↻ FETCH'}
+        </button>
         <button
           onClick={onOpenTaste}
           style={{
